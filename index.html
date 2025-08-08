@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -28,12 +28,25 @@
       display: block;
       margin: 10px 0 5px;
     }
-    input, select, textarea {
+    input, textarea {
       width: 100%;
       padding: 8px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
+    }
+    .sabor-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .sabor-item label {
+      margin: 0;
+    }
+    input[type="number"] {
+      width: 60px;
+      text-align: center;
     }
     button {
       background-color: #e67e22;
@@ -75,21 +88,32 @@
     <label for="nome">Nome:</label>
     <input type="text" id="nome" name="nome" required />
 
-    <label for="sabor">Sabores Fixos:</label>
-    <select id="sabor" name="sabor">
-      <option value="Carne de fumeiro com requeijão">Carne de fumeiro com requeijão</option>
-      <option value="Frango cremoso">Frango cremoso</option>
-      <option value="Carne seca com banana">Carne seca com banana</option>
-      <option value="Camarão">Camarão</option>
-    </select>
+    <p><strong>Escolha as quantidades de cada sabor:</strong></p>
 
-    <label for="saboresExtras">Outros sabores (opcional):</label>
-    <textarea id="saboresExtras" name="saboresExtras" placeholder="Digite aqui se quiser algo diferente dos sabores fixos..."></textarea>
+    <div class="sabor-item">
+      <label>Carne de fumeiro com requeijão</label>
+      <input type="number" id="qtdFumeiro" min="0" value="0">
+    </div>
 
-    <label for="quantidade">Quantidade:</label>
-    <input type="number" id="quantidade" name="quantidade" min="1" required />
+    <div class="sabor-item">
+      <label>Frango cremoso</label>
+      <input type="number" id="qtdFrango" min="0" value="0">
+    </div>
+
+    <div class="sabor-item">
+      <label>Carne seca com banana</label>
+      <input type="number" id="qtdCarneSeca" min="0" value="0">
+    </div>
+
+    <div class="sabor-item">
+      <label>Camarão</label>
+      <input type="number" id="qtdCamarao" min="0" value="0">
+    </div>
 
     <p><strong>Valor unitário:</strong> R$ 7,00</p>
+
+    <label for="observacoes">Observações (opcional):</label>
+    <textarea id="observacoes" name="observacoes" placeholder="Ex: Entregar na parte da tarde, sem cebola..."></textarea>
 
     <div class="pix">
       <strong>Chave Pix:</strong><br />
@@ -114,20 +138,32 @@
 
     document.getElementById('pedidoForm').addEventListener('submit', function (e) {
       e.preventDefault();
+
       const nome = document.getElementById('nome').value;
-      const sabor = document.getElementById('sabor').value;
-      const saboresExtras = document.getElementById('saboresExtras').value;
-      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const qtdFumeiro = parseInt(document.getElementById('qtdFumeiro').value) || 0;
+      const qtdFrango = parseInt(document.getElementById('qtdFrango').value) || 0;
+      const qtdCarneSeca = parseInt(document.getElementById('qtdCarneSeca').value) || 0;
+      const qtdCamarao = parseInt(document.getElementById('qtdCamarao').value) || 0;
+      const observacoes = document.getElementById('observacoes').value;
+
       const valor = 7.00;
-      const total = (quantidade * valor).toFixed(2);
+      const totalItens = qtdFumeiro + qtdFrango + qtdCarneSeca + qtdCamarao;
+      const total = (totalItens * valor).toFixed(2);
+
+      let saboresSelecionados = "";
+      if (qtdFumeiro > 0) saboresSelecionados += `\n- Carne de fumeiro com requeijão: ${qtdFumeiro}`;
+      if (qtdFrango > 0) saboresSelecionados += `\n- Frango cremoso: ${qtdFrango}`;
+      if (qtdCarneSeca > 0) saboresSelecionados += `\n- Carne seca com banana: ${qtdCarneSeca}`;
+      if (qtdCamarao > 0) saboresSelecionados += `\n- Camarão: ${qtdCamarao}`;
 
       const mensagem = `🍽️ Pedido de Empadas - Delícias da Didi
 
 👤 Nome: ${nome}
-📦 Sabores: ${sabor}${saboresExtras ? ' + ' + saboresExtras : ''}
-🔢 Quantidade: ${quantidade}
+📦 Sabores:${saboresSelecionados}
+🔢 Quantidade total: ${totalItens}
 💰 Valor unitário: R$ ${valor.toFixed(2)}
 💵 Total: R$ ${total}
+📝 Observações: ${observacoes || "Nenhuma"}
 
 📱 Chave Pix: 81bbb828-3411-4c3d-bcc5-a046c67b7aa8
 Nome: Maria Dilma Oliveira Lima (Nubank)`;
