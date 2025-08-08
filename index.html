@@ -29,9 +29,7 @@
       margin: 10px 0 5px;
     }
     input, textarea {
-      width: 100%;
       padding: 8px;
-      margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
@@ -40,9 +38,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-    }
-    .sabor-item label {
-      margin: 0;
     }
     input[type="number"] {
       width: 60px;
@@ -56,6 +51,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-top: 10px;
     }
     button:hover {
       background-color: #d35400;
@@ -68,58 +64,46 @@
       margin-top: 20px;
       text-align: center;
     }
-    .pix button {
-      background-color: #e67e22;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .pix button:hover {
-      background-color: #d35400;
-    }
   </style>
 </head>
 <body>
   <h1>Delícias da Didi</h1>
   <form id="pedidoForm">
     <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" required />
+    <input type="text" id="nome" name="nome" required style="width:100%" />
 
-    <p><strong>Escolha as quantidades de cada sabor:</strong></p>
+    <p><strong>Escolha a quantidade de cada sabor:</strong></p>
 
     <div class="sabor-item">
-      <label>Carne de fumeiro com requeijão</label>
+      <span>Carne de fumeiro com requeijão</span>
       <input type="number" id="qtdFumeiro" min="0" value="0">
     </div>
 
     <div class="sabor-item">
-      <label>Frango cremoso</label>
+      <span>Frango cremoso</span>
       <input type="number" id="qtdFrango" min="0" value="0">
     </div>
 
     <div class="sabor-item">
-      <label>Carne seca com banana</label>
+      <span>Carne seca com banana</span>
       <input type="number" id="qtdCarneSeca" min="0" value="0">
     </div>
 
     <div class="sabor-item">
-      <label>Camarão</label>
+      <span>Camarão</span>
       <input type="number" id="qtdCamarao" min="0" value="0">
     </div>
 
     <p><strong>Valor unitário:</strong> R$ 7,00</p>
 
     <label for="observacoes">Observações (opcional):</label>
-    <textarea id="observacoes" name="observacoes" placeholder="Ex: Entregar na parte da tarde, sem cebola..."></textarea>
+    <textarea id="observacoes" placeholder="Ex: Entregar à tarde, sem cebola..." style="width:100%"></textarea>
 
     <div class="pix">
-      <strong>Chave Pix:</strong><br />
-      <span id="chavePix">81bbb828-3411-4c3d-bcc5-a046c67b7aa8</span><br />
-      <strong>Nome:</strong> Maria Dilma Oliveira Lima<br />
-      <strong>Banco:</strong> Nubank<br />
+      <strong>Chave Pix:</strong><br>
+      <span id="chavePix">81bbb828-3411-4c3d-bcc5-a046c67b7aa8</span><br>
+      <strong>Nome:</strong> Maria Dilma Oliveira Lima<br>
+      <strong>Banco:</strong> Nubank<br>
       <button type="button" onclick="copiarPix()">Copiar chave Pix</button>
     </div>
 
@@ -136,35 +120,33 @@
       });
     }
 
-    document.getElementById('pedidoForm').addEventListener('submit', function (e) {
+    document.getElementById('pedidoForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const nome = document.getElementById('nome').value;
-      const qtdFumeiro = parseInt(document.getElementById('qtdFumeiro').value) || 0;
-      const qtdFrango = parseInt(document.getElementById('qtdFrango').value) || 0;
-      const qtdCarneSeca = parseInt(document.getElementById('qtdCarneSeca').value) || 0;
-      const qtdCamarao = parseInt(document.getElementById('qtdCamarao').value) || 0;
-      const observacoes = document.getElementById('observacoes').value;
+      const qtdFumeiro = Number(document.getElementById('qtdFumeiro').value) || 0;
+      const qtdFrango = Number(document.getElementById('qtdFrango').value) || 0;
+      const qtdCarneSeca = Number(document.getElementById('qtdCarneSeca').value) || 0;
+      const qtdCamarao = Number(document.getElementById('qtdCamarao').value) || 0;
+      const observacoes = document.getElementById('observacoes').value.trim();
 
-      const valor = 7.00;
+      const valorUnitario = 7.00;
       const totalItens = qtdFumeiro + qtdFrango + qtdCarneSeca + qtdCamarao;
-      const total = (totalItens * valor).toFixed(2);
+      const total = (totalItens * valorUnitario).toFixed(2);
 
-      let saboresSelecionados = "";
-      if (qtdFumeiro > 0) saboresSelecionados += `\n- Carne de fumeiro com requeijão: ${qtdFumeiro}`;
-      if (qtdFrango > 0) saboresSelecionados += `\n- Frango cremoso: ${qtdFrango}`;
-      if (qtdCarneSeca > 0) saboresSelecionados += `\n- Carne seca com banana: ${qtdCarneSeca}`;
-      if (qtdCamarao > 0) saboresSelecionados += `\n- Camarão: ${qtdCamarao}`;
+      let listaSabores = "";
+      if (qtdFumeiro > 0) listaSabores += `\n- Carne de fumeiro com requeijão: ${qtdFumeiro}`;
+      if (qtdFrango > 0) listaSabores += `\n- Frango cremoso: ${qtdFrango}`;
+      if (qtdCarneSeca > 0) listaSabores += `\n- Carne seca com banana: ${qtdCarneSeca}`;
+      if (qtdCamarao > 0) listaSabores += `\n- Camarão: ${qtdCamarao}`;
 
       const mensagem = `🍽️ Pedido de Empadas - Delícias da Didi
-
 👤 Nome: ${nome}
-📦 Sabores:${saboresSelecionados}
+📦 Sabores:${listaSabores || "\nNenhum selecionado"}
 🔢 Quantidade total: ${totalItens}
-💰 Valor unitário: R$ ${valor.toFixed(2)}
+💰 Valor unitário: R$ ${valorUnitario.toFixed(2)}
 💵 Total: R$ ${total}
 📝 Observações: ${observacoes || "Nenhuma"}
-
 📱 Chave Pix: 81bbb828-3411-4c3d-bcc5-a046c67b7aa8
 Nome: Maria Dilma Oliveira Lima (Nubank)`;
 
